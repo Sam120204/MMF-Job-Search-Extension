@@ -130,7 +130,6 @@
   }
 
   async function inspect() {
-    if (!/\/(?:job|details)\//i.test(location.pathname)) return;
     const job = JobSheetExtractor.extract(document, location);
     if (job.detected) await buildPanel(job);
   }

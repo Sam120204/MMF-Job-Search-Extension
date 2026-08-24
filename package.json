@@ -1,6 +1,6 @@
 {
   "name": "job-sheet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Capture job postings into a Google Sheets application tracker.",
   "scripts": {

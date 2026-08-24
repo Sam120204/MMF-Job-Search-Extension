@@ -31,7 +31,7 @@ npm test
 npm run package
 ```
 
-The packaging command refuses to create a release archive while the placeholder OAuth client ID remains. Its output is `dist/job-sheet-v0.1.0.zip`.
+The packaging command refuses to create a release archive while the placeholder OAuth client ID remains. Its output is versioned from the manifest, for example `dist/job-sheet-v0.2.0.zip`.
 
 ## 4. Submit
 

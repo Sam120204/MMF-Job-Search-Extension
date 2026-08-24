@@ -28,8 +28,8 @@ Users browse job-detail pages, including Workday postings, and maintain a Google
 
 ## Capabilities and Constraints
 
-- A page-side capture panel appears automatically on recognized Workday job-detail pages; the toolbar popup also supports capture on the active page.
-- The extension extracts job title, requisition number, organization, deadline, and source URL using structured job-posting data and site-specific fallbacks.
+- A page-side capture panel appears automatically on recognized Workday, Greenhouse, Lever, SmartRecruiters, Ashby, iCIMS, Taleo, and SAP SuccessFactors job-detail pages; the toolbar popup supports capture on any active HTTP(S) employer page.
+- The extension extracts job title, requisition number, organization, deadline, and source URL using structured job-posting data, platform adapters, and scored generic DOM evidence.
 - Users can review and edit every value before it is saved.
 - Google authentication uses Chrome Identity and the Google Sheets API. The extension does not operate its own backend or database.
 - The user links a Google Sheets URL and chooses a worksheet. Microsoft Excel files opened through Google Drive must first be converted to native Google Sheets format for Sheets API writes.

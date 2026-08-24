@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Job Sheet",
   "description": "Review a job posting and add it to your own Google Sheets tracker.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minimum_chrome_version": "116",
   "action": {
     "default_title": "Capture this job",
@@ -26,7 +26,17 @@
   "host_permissions": ["https://sheets.googleapis.com/*"],
   "content_scripts": [
     {
-      "matches": ["https://*.myworkdayjobs.com/*"],
+      "matches": [
+        "https://*.myworkdayjobs.com/*",
+        "https://boards.greenhouse.io/*",
+        "https://job-boards.greenhouse.io/*",
+        "https://jobs.lever.co/*",
+        "https://jobs.smartrecruiters.com/*",
+        "https://jobs.ashbyhq.com/*",
+        "https://*.icims.com/*",
+        "https://*.taleo.net/*",
+        "https://*.successfactors.com/*"
+      ],
       "js": ["src/shared/schema.js", "src/shared/extractor.js", "src/content/content.js"],
       "run_at": "document_idle"
     }

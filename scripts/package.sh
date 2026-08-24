@@ -3,7 +3,8 @@ set -euo pipefail
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"
 dist_dir="$project_dir/dist"
-package_path="$dist_dir/job-sheet-v0.1.0.zip"
+version="$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).version' "$project_dir/manifest.json")"
+package_path="$dist_dir/job-sheet-v${version}.zip"
 
 if rg -q 'REPLACE_WITH_GOOGLE_OAUTH_CLIENT_ID' "$project_dir/manifest.json"; then
   echo "Refusing to package: replace the Google OAuth client ID in manifest.json first." >&2

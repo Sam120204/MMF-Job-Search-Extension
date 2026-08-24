@@ -4,8 +4,9 @@ Job Sheet is a Chrome Manifest V3 extension that extracts a job posting, lets th
 
 ## What it does
 
-- Detects Workday job-detail pages and opens an on-page capture panel.
-- Extracts standard `JobPosting` structured data on other sites when the toolbar popup is used.
+- Detects job-detail pages on Workday, Greenhouse, Lever, SmartRecruiters, Ashby, iCIMS, Taleo, and SAP SuccessFactors and opens an on-page capture panel.
+- Uses layered parsing: standard `JobPosting` structured data first, platform-specific DOM selectors second, and generic visible-page evidence as a fallback.
+- Uses the toolbar popup on any HTTP(S) employer page without requesting automatic access to every website.
 - Captures the seven tracker columns defined in [PRODUCT.md](PRODUCT.md).
 - Connects directly to Google Sheets through Chrome Identity; there is no custom backend.
 - Validates headings before every write and never overwrites a non-empty tab with a different layout.
@@ -17,6 +18,10 @@ Job Sheet is a Chrome Manifest V3 extension that extracts a job posting, lets th
 2. Open `chrome://extensions` and enable Developer mode.
 3. Choose **Load unpacked** and select this repository.
 4. Open **Extension options**, paste a native Google Sheets URL, and choose or create a tracker tab.
+
+## Job-page parsing
+
+The extension parses the live DOM already rendered by Chrome, so it works with JavaScript-driven career pages without Selenium or a remote scraping server. Extracted values are always editable before filing. The toolbar includes selectors for LinkedIn and Indeed and a generic fallback for other employer sites that expose a recognizable title plus job-detail evidence such as an Apply action, requisition label, description, or detail URL.
 
 Run the dependency-free tests with:
 
