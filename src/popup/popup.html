@@ -42,17 +42,17 @@
         <div class="field"><label for="organization">Organization</label><input id="organization" name="organization" required autocomplete="organization"></div>
         <div class="field-row">
           <div class="field"><label for="deadline">Application deadline</label><input id="deadline" name="deadline" type="date"></div>
-          <div class="field"><label for="application-date">Application date</label><input id="application-date" name="applicationDate" type="date"></div>
+          <div class="field"><label>Application date</label><div id="application-date-readout" class="field-readout">Automatically set</div><input id="application-date" name="applicationDate" type="hidden"></div>
         </div>
         <div class="field-row">
           <div class="field"><label for="status">Current status</label><select id="status" name="status"></select></div>
-          <div class="field"><label for="pdf-saved">JD PDF saved?</label><select id="pdf-saved" name="pdfSaved"><option>N</option><option>Y</option></select></div>
+          <div class="field"><label>JD PDF</label><div class="field-readout" role="status">Saved automatically</div><input id="pdf-saved" name="pdfSaved" type="hidden" value="Y"></div>
         </div>
         <div class="field"><label for="next-steps">Outcomes / responses / next steps</label><textarea id="next-steps" name="nextSteps" placeholder="Optional"></textarea></div>
         <p id="form-notice" class="notice" role="status" aria-live="polite" hidden></p>
         <div class="file-footer">
           <div class="destination-line"><span id="destination-name">Google Sheet</span><button id="change-destination" type="button">Change</button></div>
-          <button id="save-button" class="primary-button full-width" type="submit"><span>File in Google Sheet</span></button>
+          <button id="save-button" class="primary-button full-width" type="submit"><span>Save PDF and file</span></button>
         </div>
       </form>
     </section>

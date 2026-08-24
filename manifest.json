@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoNoKIbYZ8A8QZ9J+c3ta4cbg8GPmELl/WinoFmvD2WE++/BP+i1dHYzNRMCuXk5nPs7yk9QaH4iOlOqM8EWjnA8VEIfAmC1Z/Ydf0JjP/NHur+xROY58qW4hfloecozLeYIjQUB+XDvcVPN1Bp8fVaDkxjpLBE11R7MXOyOQVGFaOXSfbdU0r6tmCdsI4h19jpjPgJO6fvzhNZFaxEzGnhlL9IhAOm5caWU9qoQuMbPWY1avUQ6uKeXtUBOv0xkokyC9l+HKEnw9gvOrJ7zD5gVeoR0mMeHnOehIFX+Am8jiwIq4tWhenWK4IeGGkxYFTYobOEmYrEvxezhyBAGQrwIDAQAB",
   "name": "Job Sheet",
   "description": "Review a job posting and add it to your own Google Sheets tracker.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "minimum_chrome_version": "116",
   "action": {
     "default_title": "Capture this job",
@@ -23,7 +24,11 @@
   },
   "options_page": "src/options/options.html",
   "permissions": ["activeTab", "identity", "scripting", "storage"],
-  "host_permissions": ["https://sheets.googleapis.com/*"],
+  "host_permissions": [
+    "https://sheets.googleapis.com/*",
+    "https://www.googleapis.com/drive/v3/*",
+    "https://www.googleapis.com/upload/drive/v3/*"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -42,7 +47,10 @@
     }
   ],
   "oauth2": {
-    "client_id": "REPLACE_WITH_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
+    "client_id": "681567142336-tma2n00g2q53t91hkfd786sc6i7hob4v.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/spreadsheets",
+      "https://www.googleapis.com/auth/drive.file"
+    ]
   }
 }

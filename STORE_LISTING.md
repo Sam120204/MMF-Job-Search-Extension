@@ -10,7 +10,7 @@ Review a job posting and file it directly in your own Google Sheets application 
 
 ## Detailed description
 
-Job Sheet removes repetitive copying from job applications. On supported hiring-platform job pages, it detects the posting and presents an editable application record. You can confirm the title and requisition number, organization, deadline, application date, status, PDF status, and next steps before adding one row to your selected Google Sheet.
+Job Sheet removes repetitive copying from job applications. On supported hiring-platform job pages, it detects the posting and presents an editable application record. You can confirm the title and requisition number, organization, deadline, application date, status, and next steps before adding one row to your selected Google Sheet. When you file the record, Job Sheet also creates a clean job-description PDF in your Google Drive and links it from the tracker row.
 
 The toolbar popup can also read standard JobPosting data on other job sites when you invoke it. Your spreadsheet remains the source of truth: Job Sheet has no custom backend, does not operate an advertising profile, and sends a record to Google Sheets only after you choose to file it.
 
@@ -20,8 +20,11 @@ Features:
 - Generic parsing for other employer career pages through the toolbar popup
 - Toolbar parsing for LinkedIn and Indeed job-detail pages
 - Editable preview before every spreadsheet write
+- Automatic job-description PDF creation in a dedicated Google Drive folder
+- Clickable PDF link in every filed tracker row
 - Exact validation of the seven tracker headings
-- Safe setup for empty tabs or a newly created Job Tracker tab
+- Automatic selection of the first empty or compatible worksheet
+- Safe fallback when the first worksheet contains different columns
 - Clickable source link on each filed job title
 - Interested, Applied, Interviewing, Offer, Rejected, and Withdrawn statuses
 - Clear recovery guidance for authentication, worksheet, and extraction errors
@@ -30,7 +33,7 @@ Native Google Sheets files are supported. Excel files stored in Google Drive mus
 
 ## Single purpose
 
-Job Sheet captures a job posting that the user is viewing and files a user-reviewed application record in a Google spreadsheet selected by that user.
+Job Sheet captures a job posting that the user is viewing and files a user-reviewed application record, including a linked job-description PDF, in the user's selected Google spreadsheet and Google Drive.
 
 ## Permission justifications
 
@@ -44,7 +47,7 @@ Used with `activeTab` to run the local job extractor on the current page. No rem
 
 ### `identity`
 
-Used to let the user authorize direct access to Google Sheets through their Google account.
+Used to let the user authorize direct access to Google Sheets and the PDF files Job Sheet creates in Google Drive.
 
 ### `storage`
 
@@ -53,6 +56,10 @@ Used to remember the selected spreadsheet and worksheet in Chrome synchronized s
 ### `https://sheets.googleapis.com/*`
 
 Used to inspect worksheet headings, create or format a tracker tab when requested, and append reviewed application rows.
+
+### `https://www.googleapis.com/drive/v3/*` and `https://www.googleapis.com/upload/drive/v3/*`
+
+Used to create a dedicated `Job Sheet PDFs` folder, upload the job-description PDF requested by the user, and return its Drive link. The extension requests the limited `drive.file` OAuth scope and cannot browse unrelated Drive files.
 
 ### Applicant-tracking-system content-script access
 

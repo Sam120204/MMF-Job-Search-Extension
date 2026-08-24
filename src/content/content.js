@@ -36,6 +36,7 @@
       label { display:grid; gap:4px; }
       input,select,textarea { width:100%; min-height:37px; border:1px solid var(--line); border-radius:4px; padding:8px 9px; background:#fff; color:var(--ink); text-transform:none; }
       textarea { min-height:56px; resize:vertical; }
+      .automatic-value { min-height:37px; display:flex; align-items:center; border:1px solid var(--line); border-radius:4px; padding:8px 9px; background:#edf3ef; color:var(--forest); font-weight:700; text-transform:none; }
       input:focus,select:focus,textarea:focus,button:focus-visible { outline:3px solid rgba(20,108,148,.28); outline-offset:1px; }
       .row { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
       .primary { min-height:41px; display:flex; align-items:center; justify-content:center; border:1px solid var(--forest); border-radius:5px; background:var(--forest); color:#fff; font-weight:700; }
@@ -69,18 +70,19 @@
     const shadow = host.attachShadow({ mode: "open" });
     const statuses = JobSheetSchema.STATUSES.map((status) => `<option${status === "Interested" ? " selected" : ""}>${status}</option>`).join("");
     const connected = destination.spreadsheetId && destination.sheetTitle && destination.sheetId !== undefined;
+    const applicationDate = JobSheetSchema.todayLocal();
     shadow.innerHTML = `<style>${panelStyles()}</style><div class="panel-live sr-only" role="status" aria-live="polite"></div><section class="panel" role="region" aria-label="Job Sheet capture panel">
       <header><div><h2>Job Sheet</h2><p>Application record</p></div><button class="close" type="button" title="Close panel" aria-label="Close Job Sheet panel"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
       ${connected ? `<form>
         <div class="heading"><div><span class="record-no">NEW APPLICATION</span><strong>Review before filing</strong></div><span class="stamp">DRAFT</span></div>
         <label>Job title with requisition #<input name="titleAndRequisition" required value="${escapeHtml(job.titleAndRequisition)}"></label>
         <label>Organization<input name="organization" required value="${escapeHtml(job.organization)}"></label>
-        <div class="row"><label>Application deadline<input name="deadline" type="date" value="${/^\d{4}-\d{2}-\d{2}$/.test(job.deadline) ? job.deadline : ""}"></label><label>Application date<input name="applicationDate" type="date" value=""></label></div>
-        <div class="row"><label>Current status<select name="status">${statuses}</select></label><label>JD PDF saved?<select name="pdfSaved"><option>N</option><option>Y</option></select></label></div>
+        <div class="row"><label>Application deadline<input name="deadline" type="date" value="${/^\d{4}-\d{2}-\d{2}$/.test(job.deadline) ? job.deadline : ""}"></label><label>Application date<span class="automatic-value">${escapeHtml(applicationDate)}</span><input type="hidden" name="applicationDate" value="${escapeHtml(applicationDate)}"></label></div>
+        <div class="row"><label>Current status<select name="status">${statuses}</select></label><label>JD PDF<span class="automatic-value">Saved automatically</span><input type="hidden" name="pdfSaved" value="Y"></label></div>
         <label>Outcomes / responses / next steps<textarea name="nextSteps" placeholder="Optional"></textarea></label>
         <p class="notice" hidden role="status" aria-live="polite"></p>
         <div class="destination-row"><span class="destination" title="${escapeHtml(destination.spreadsheetName || "Google Sheet")} / ${escapeHtml(destination.sheetTitle)}">${escapeHtml(destination.spreadsheetName || "Google Sheet")} / ${escapeHtml(destination.sheetTitle)}</span><button class="change" type="button">Change</button></div>
-        <button class="primary" type="submit">File in Google Sheet</button>
+        <button class="primary" type="submit">Save PDF and file</button>
       </form>` : `<div class="setup"><span class="record-no">SETUP</span><h3>Link your tracker</h3><p>Choose the Google Sheet where this posting should be filed.</p><button class="primary" type="button">Open spreadsheet setup</button></div>`}
     </section>`;
     shadow.querySelector(".close").addEventListener("click", () => closePanel(host));
@@ -91,26 +93,20 @@
       shadow.querySelector(".primary").addEventListener("click", () => chrome.runtime.sendMessage({ type: "OPEN_OPTIONS" }));
     } else {
       const form = shadow.querySelector("form");
-      const statusSelect = form.querySelector('[name="status"]');
-      const applicationDate = form.querySelector('[name="applicationDate"]');
-      statusSelect.addEventListener("change", () => {
-        if (statusSelect.value === "Interested") applicationDate.value = "";
-        else if (!applicationDate.value) applicationDate.value = JobSheetSchema.todayLocal();
-      });
       form.querySelector(".change").addEventListener("click", () => chrome.runtime.sendMessage({ type: "OPEN_OPTIONS" }));
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const button = form.querySelector(".primary");
         const notice = form.querySelector(".notice");
         button.disabled = true;
-        button.textContent = "Filing application…";
+        button.textContent = "Saving PDF…";
         notice.hidden = false;
         notice.className = "notice";
-        notice.textContent = "Connecting to Google Sheets…";
+        notice.textContent = "Creating the JD PDF and filing the record…";
         try {
           const application = { ...Object.fromEntries(new FormData(form)), sourceUrl: job.sourceUrl, description: job.description };
           const result = await send({ type: "APPEND_APPLICATION", ...destination, application });
-          const confirmation = result.rowNumber ? `Filed in row ${result.rowNumber}.` : "Application filed.";
+          const confirmation = result.rowNumber ? `Filed in row ${result.rowNumber} with a linked JD PDF.` : "Application and JD PDF filed.";
           shadow.querySelector(".panel-live").textContent = confirmation;
           form.className = "success-state";
           form.innerHTML = `<span class="record-no">FILED</span><h3>Application filed</h3><p>${escapeHtml(confirmation)} Open the tracker to verify the new record.</p><a class="primary" href="https://docs.google.com/spreadsheets/d/${encodeURIComponent(destination.spreadsheetId)}/edit" target="_blank" rel="noreferrer">Open Google Sheet</a><button class="secondary" type="button">Close</button>`;
@@ -119,7 +115,7 @@
           notice.className = "notice error";
           notice.textContent = error.message;
           button.disabled = false;
-          button.textContent = "Try filing again";
+          button.textContent = "Try saving again";
         }
       });
     }

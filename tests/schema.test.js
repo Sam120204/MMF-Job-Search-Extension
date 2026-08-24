@@ -22,8 +22,13 @@ test("maps an application to the required column order", () => {
   assert.deepEqual(row, ["Analyst (R-123456)", "RBC", "2026-09-01", "2026-08-24", "Applied", "N", "Wait"]);
 });
 
-test("does not claim an application happened when saving an interest", () => {
-  const row = schema.applicationToRow({ title: "Analyst", status: "Interested" });
-  assert.equal(row[3], "");
+test("finalizes the application date and PDF status when the record is filed", () => {
+  const application = schema.applicationForFiling(
+    { title: "Analyst", status: "Interested", applicationDate: "2000-01-01", pdfSaved: "N" },
+    new Date(2026, 7, 24, 23, 59, 59)
+  );
+  const row = schema.applicationToRow(application);
+  assert.equal(row[3], "2026-08-24");
   assert.equal(row[4], "Interested");
+  assert.equal(row[5], "Y");
 });

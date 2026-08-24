@@ -50,7 +50,25 @@
     ];
   }
 
-  const api = { HEADERS, STATUSES, parseSpreadsheetId, todayLocal, quoteSheetTitle, headersMatch, isEmptyHeader, applicationToRow };
+  function applicationForFiling(application, date = new Date()) {
+    return {
+      ...application,
+      applicationDate: todayLocal(date),
+      pdfSaved: "Y"
+    };
+  }
+
+  const api = {
+    HEADERS,
+    STATUSES,
+    parseSpreadsheetId,
+    todayLocal,
+    quoteSheetTitle,
+    headersMatch,
+    isEmptyHeader,
+    applicationToRow,
+    applicationForFiling
+  };
   root.JobSheetSchema = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

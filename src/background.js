@@ -1,6 +1,8 @@
-importScripts("shared/schema.js");
+importScripts("vendor/pdf-lib.min.js", "shared/schema.js", "shared/job-pdf.js");
 
-const API_ROOT = "https://sheets.googleapis.com/v4/spreadsheets";
+const SHEETS_API_ROOT = "https://sheets.googleapis.com/v4/spreadsheets";
+const GOOGLE_API_ROOT = "https://www.googleapis.com";
+const PDF_FOLDER_NAME = "Job Sheet PDFs";
 
 function extensionConfigured() {
   const clientId = chrome.runtime.getManifest().oauth2?.client_id || "";
@@ -18,27 +20,43 @@ async function clearToken(token) {
   if (token) await chrome.identity.removeCachedAuthToken({ token });
 }
 
-async function apiRequest(path, options = {}, interactive = true, retry = true) {
+async function authorizedRequest(url, options = {}, interactive = true, retry = true, serviceName = "Google") {
   const token = await getAuthToken(interactive);
-  const response = await fetch(`${API_ROOT}${path}`, {
+  const bodyIsFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    ...(options.body && !bodyIsFormData ? { "Content-Type": "application/json" } : {}),
+    ...(options.headers || {})
+  };
+  const response = await fetch(url, {
     ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
+    headers
   });
   if (response.status === 401 && retry) {
     await clearToken(token);
-    return apiRequest(path, options, interactive, false);
+    return authorizedRequest(url, options, interactive, false, serviceName);
   }
-  const body = await response.json().catch(() => ({}));
+  const text = await response.text();
+  let body = {};
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch (_error) {
+    body = text ? { message: text } : {};
+  }
   if (!response.ok) {
-    const error = new Error(body.error?.message || `Google Sheets returned ${response.status}.`);
+    const error = new Error(body.error?.message || body.message || `${serviceName} returned ${response.status}.`);
     error.code = body.error?.status || `HTTP_${response.status}`;
     throw error;
   }
   return body;
+}
+
+function apiRequest(path, options = {}, interactive = true, retry = true) {
+  return authorizedRequest(`${SHEETS_API_ROOT}${path}`, options, interactive, retry, "Google Sheets");
+}
+
+function driveApiRequest(path, options = {}, interactive = true, retry = true) {
+  return authorizedRequest(`${GOOGLE_API_ROOT}${path}`, options, interactive, retry, "Google Drive");
 }
 
 async function getSpreadsheet(spreadsheetId, interactive = true) {
@@ -131,47 +149,110 @@ async function createTrackerSheet(spreadsheetId) {
   return properties;
 }
 
+function driveQueryLiteral(value) {
+  return String(value).replaceAll("\\", "\\\\").replaceAll("'", "\\'");
+}
+
+async function findOrCreatePdfFolder() {
+  const query = `name = '${driveQueryLiteral(PDF_FOLDER_NAME)}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+  const parameters = new URLSearchParams({
+    q: query,
+    spaces: "drive",
+    fields: "files(id,name)",
+    pageSize: "10"
+  });
+  const result = await driveApiRequest(`/drive/v3/files?${parameters}`);
+  if (result.files?.length) return result.files[0];
+  return driveApiRequest("/drive/v3/files?fields=id,name", {
+    method: "POST",
+    body: JSON.stringify({ name: PDF_FOLDER_NAME, mimeType: "application/vnd.google-apps.folder" })
+  });
+}
+
+async function uploadJobPdf(application) {
+  const capturedAt = new Date();
+  const folder = await findOrCreatePdfFolder();
+  const name = JobSheetPdf.fileName(application, capturedAt);
+  const bytes = await JobSheetPdf.create(application, { capturedAt });
+  const form = new FormData();
+  form.append("metadata", new Blob([JSON.stringify({ name, parents: [folder.id] })], { type: "application/json" }));
+  form.append("file", new Blob([bytes], { type: "application/pdf" }), name);
+  const file = await driveApiRequest("/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink", {
+    method: "POST",
+    body: form
+  });
+  return {
+    id: file.id,
+    name: file.name || name,
+    url: file.webViewLink || `https://drive.google.com/file/d/${encodeURIComponent(file.id)}/view`
+  };
+}
+
 function rowNumberFromRange(updatedRange) {
   const match = String(updatedRange || "").match(/![A-Z]+(\d+):/i);
   return match ? Number(match[1]) : null;
 }
 
-async function linkSource(spreadsheetId, sheetId, rowNumber, sourceUrl) {
-  if (!rowNumber || !/^https?:\/\//i.test(sourceUrl || "")) return;
+async function linkApplicationAssets(spreadsheetId, sheetId, rowNumber, sourceUrl, pdfFile) {
+  if (!rowNumber) return;
+  const requests = [];
+  if (/^https?:\/\//i.test(sourceUrl || "")) {
+    requests.push({
+      updateCells: {
+        range: {
+          sheetId,
+          startRowIndex: rowNumber - 1,
+          endRowIndex: rowNumber,
+          startColumnIndex: 0,
+          endColumnIndex: 1
+        },
+        rows: [{ values: [{
+          note: `Source job posting: ${sourceUrl}`,
+          userEnteredFormat: { textFormat: { link: { uri: sourceUrl } } }
+        }] }],
+        fields: "note,userEnteredFormat.textFormat.link"
+      }
+    });
+  }
+  if (/^https?:\/\//i.test(pdfFile?.url || "")) {
+    requests.push({
+      updateCells: {
+        range: {
+          sheetId,
+          startRowIndex: rowNumber - 1,
+          endRowIndex: rowNumber,
+          startColumnIndex: 5,
+          endColumnIndex: 6
+        },
+        rows: [{ values: [{
+          userEnteredValue: { stringValue: "Y" },
+          note: `Job description PDF: ${pdfFile.name}`,
+          userEnteredFormat: { textFormat: { link: { uri: pdfFile.url } } }
+        }] }],
+        fields: "userEnteredValue,note,userEnteredFormat.textFormat.link"
+      }
+    });
+  }
+  if (!requests.length) return;
   await apiRequest(`/${encodeURIComponent(spreadsheetId)}:batchUpdate`, {
     method: "POST",
-    body: JSON.stringify({
-      requests: [{
-        updateCells: {
-          range: {
-            sheetId,
-            startRowIndex: rowNumber - 1,
-            endRowIndex: rowNumber,
-            startColumnIndex: 0,
-            endColumnIndex: 1
-          },
-          rows: [{ values: [{
-            note: `Source job posting: ${sourceUrl}`,
-            userEnteredFormat: { textFormat: { link: { uri: sourceUrl } } }
-          }] }],
-          fields: "note,userEnteredFormat.textFormat.link"
-        }
-      }]
-    })
+    body: JSON.stringify({ requests })
   });
 }
 
 async function appendApplication(message) {
   const { spreadsheetId, sheetId, sheetTitle, application } = message;
   await prepareSheet(spreadsheetId, sheetId, sheetTitle);
+  const finalizedApplication = JobSheetSchema.applicationForFiling(application);
+  const pdfFile = await uploadJobPdf(finalizedApplication);
   const range = encodeURIComponent(`${JobSheetSchema.quoteSheetTitle(sheetTitle)}!A:G`);
   const result = await apiRequest(
     `/${encodeURIComponent(spreadsheetId)}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS&includeValuesInResponse=true`,
-    { method: "POST", body: JSON.stringify({ values: [JobSheetSchema.applicationToRow(application)] }) }
+    { method: "POST", body: JSON.stringify({ values: [JobSheetSchema.applicationToRow(finalizedApplication)] }) }
   );
   const rowNumber = rowNumberFromRange(result.updates?.updatedRange);
-  await linkSource(spreadsheetId, sheetId, rowNumber, application.sourceUrl);
-  return { rowNumber, updatedRange: result.updates?.updatedRange };
+  await linkApplicationAssets(spreadsheetId, sheetId, rowNumber, finalizedApplication.sourceUrl, pdfFile);
+  return { rowNumber, updatedRange: result.updates?.updatedRange, pdfFile };
 }
 
 async function handleMessage(message) {

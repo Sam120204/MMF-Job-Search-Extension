@@ -9,15 +9,16 @@ Job Sheet is a Chrome Manifest V3 extension that extracts a job posting, lets th
 - Uses the toolbar popup on any HTTP(S) employer page without requesting automatic access to every website.
 - Captures the seven tracker columns defined in [PRODUCT.md](PRODUCT.md).
 - Connects directly to Google Sheets through Chrome Identity; there is no custom backend.
+- Creates a clean job-description PDF in the user's `Job Sheet PDFs` Drive folder when a reviewed record is filed.
 - Validates headings before every write and never overwrites a non-empty tab with a different layout.
-- Adds the source posting URL as the first cell's hyperlink and note.
+- Adds the source posting URL to the first cell and the generated PDF link to the PDF-status cell.
 
 ## Local development
 
 1. Follow the OAuth setup in [PUBLISHING.md](PUBLISHING.md).
 2. Open `chrome://extensions` and enable Developer mode.
 3. Choose **Load unpacked** and select this repository.
-4. Open **Extension options**, paste a native Google Sheets URL, and choose or create a tracker tab.
+4. Open **Extension options** and paste a native Google Sheets URL. The first empty or compatible worksheet is selected automatically; otherwise choose or create a tracker tab.
 
 ## Job-page parsing
 

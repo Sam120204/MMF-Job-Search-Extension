@@ -13,14 +13,19 @@ function saveDestination(sheet) {
   });
 }
 
+async function prepareAndSaveTab(sheet) {
+  const result = await sendMessage({ type: "PREPARE_SHEET", spreadsheetId, sheetId: sheet.sheetId, sheetTitle: sheet.title });
+  await saveDestination(sheet);
+  await renderCurrent();
+  return result;
+}
+
 async function useTab(sheet, button) {
   setBusy(button, true, "Checking…");
   announce(byId("setup-notice"), `Checking ${sheet.title}…`);
   try {
-    const result = await sendMessage({ type: "PREPARE_SHEET", spreadsheetId, sheetId: sheet.sheetId, sheetTitle: sheet.title });
-    await saveDestination(sheet);
+    const result = await prepareAndSaveTab(sheet);
     announce(byId("setup-notice"), result.initialized ? `${sheet.title} was prepared and selected.` : `${sheet.title} is connected and ready.`, "success");
-    await renderCurrent();
   } catch (error) {
     announce(byId("setup-notice"), error.message, "error");
   } finally {
@@ -49,9 +54,21 @@ function renderTabs() {
   byId("tabs-section").hidden = false;
 }
 
-async function inspectSpreadsheet() {
+async function inspectSpreadsheet({ autoSelectFirst = false } = {}) {
   activeSpreadsheet = await sendMessage({ type: "GET_SPREADSHEET", spreadsheetId, interactive: true });
+  activeSpreadsheet.sheets.sort((a, b) => a.properties.index - b.properties.index);
+  if (autoSelectFirst && activeSpreadsheet.sheets.length) {
+    const firstSheet = activeSpreadsheet.sheets[0].properties;
+    try {
+      const result = await prepareAndSaveTab(firstSheet);
+      byId("tabs-section").hidden = true;
+      return { selected: true, sheet: firstSheet, initialized: result.initialized };
+    } catch (error) {
+      if (error.code !== "HEADER_MISMATCH") throw error;
+    }
+  }
   renderTabs();
+  return { selected: false };
 }
 
 async function renderCurrent() {
@@ -80,8 +97,13 @@ byId("link-form").addEventListener("submit", async (event) => {
   setBusy(button, true, "Connecting…");
   announce(byId("setup-notice"), "Waiting for Google sign-in…");
   try {
-    await inspectSpreadsheet();
-    announce(byId("setup-notice"), "Connected. Choose a worksheet tab below.", "success");
+    const result = await inspectSpreadsheet({ autoSelectFirst: true });
+    if (result.selected) {
+      const action = result.initialized ? "was prepared and selected" : "is connected and ready";
+      announce(byId("setup-notice"), `${result.sheet.title} ${action}.`, "success");
+    } else {
+      announce(byId("setup-notice"), "The first worksheet contains different columns. Choose another tab or create a prepared tracker tab.", "neutral");
+    }
   } catch (error) {
     const officeHint = /not found|requested entity/i.test(error.message) ? " If this is an Excel file stored in Drive, open it in Google Sheets and choose File → Save as Google Sheets first." : "";
     announce(byId("setup-notice"), `${error.message}${officeHint}`, "error");

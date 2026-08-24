@@ -26,9 +26,11 @@ function populateForm(job) {
   byId("job-title").value = job.titleAndRequisition || job.title || "";
   byId("organization").value = job.organization || "";
   byId("deadline").value = /^\d{4}-\d{2}-\d{2}$/.test(job.deadline || "") ? job.deadline : "";
-  byId("application-date").value = "";
+  const applicationDate = JobSheetSchema.todayLocal();
+  byId("application-date").value = applicationDate;
+  byId("application-date-readout").textContent = applicationDate;
   byId("status").value = "Interested";
-  byId("pdf-saved").value = "N";
+  byId("pdf-saved").value = "Y";
   byId("next-steps").value = "";
   byId("destination-name").textContent = `${settings.spreadsheetName || "Google Sheet"} / ${settings.sheetTitle}`;
 }
@@ -67,17 +69,12 @@ byId("change-destination").addEventListener("click", openOptions);
 byId("retry-button").addEventListener("click", load);
 byId("capture-another").addEventListener("click", load);
 JobSheetSchema.STATUSES.forEach((status) => byId("status").add(new Option(status, status)));
-byId("status").addEventListener("change", (event) => {
-  const dateInput = byId("application-date");
-  if (event.target.value === "Interested") dateInput.value = "";
-  else if (!dateInput.value) dateInput.value = JobSheetSchema.todayLocal();
-});
 
 byId("capture-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const button = byId("save-button");
-  setBusy(button, true, "Filing application…");
-  announce(byId("form-notice"), "Connecting to Google Sheets…");
+  setBusy(button, true, "Saving PDF…");
+  announce(byId("form-notice"), "Creating the JD PDF and filing the record…");
   try {
     const result = await sendMessage({
       type: "APPEND_APPLICATION",
@@ -86,13 +83,13 @@ byId("capture-form").addEventListener("submit", async (event) => {
       sheetTitle: settings.sheetTitle,
       application: formApplication()
     });
-    byId("success-copy").textContent = result.rowNumber ? `Added to row ${result.rowNumber} in ${settings.sheetTitle}.` : `Added to ${settings.sheetTitle}.`;
+    byId("success-copy").textContent = result.rowNumber ? `Added to row ${result.rowNumber} in ${settings.sheetTitle} with a linked JD PDF.` : `Added to ${settings.sheetTitle} with a linked JD PDF.`;
     byId("open-sheet-link").href = `https://docs.google.com/spreadsheets/d/${settings.spreadsheetId}/edit`;
     showState("success-state");
   } catch (error) {
     announce(byId("form-notice"), error.message, "error");
   } finally {
-    setBusy(button, false, "File in Google Sheet");
+    setBusy(button, false, "Save PDF and file");
   }
 });
 
