@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workday capture preview</title>
+  <style>
+    body { margin: 0; background: #eef1f2; color: #1d2830; font: 16px/1.55 Arial, sans-serif; }
+    main { width: min(820px, calc(100% - 40px)); margin: 50px auto; padding: 38px; background: white; }
+    h1 { max-width: 25ch; font-size: 32px; line-height: 1.12; }
+  </style>
+  <script type="application/ld+json">
+    {
+      "@type": "JobPosting",
+      "title": "2027 Winter – GRM, MCCR Policy AI Applications Intern (4 Months)",
+      "identifier": { "@type": "PropertyValue", "value": "R-0000184696" },
+      "hiringOrganization": { "@type": "Organization", "name": "0000050007 Royal Bank of Canada" },
+      "validThrough": "2026-09-21",
+      "description": "AI applications internship preview."
+    }
+  </script>
+</head>
+<body>
+  <main>
+    <h1 data-automation-id="jobPostingHeader">2027 Winter – GRM, MCCR Policy AI Applications Intern (4 Months)</h1>
+    <p>Toronto, Ontario · Full time</p>
+    <h2>Job Description</h2>
+    <p>Collaborate with the Market and Counterparty Credit Risk Policy team on AI and machine-learning prototypes.</p>
+    <button id="change-preview-destination" type="button">Simulate destination change</button>
+  </main>
+  <script>
+    let previewSettings = { spreadsheetId: "preview-sheet-id", spreadsheetName: "Application Tracker", sheetId: 0, sheetTitle: "2027 Internships" };
+    const storageListeners = [];
+    window.chrome = {
+      storage: {
+        sync: { get: async () => ({ ...previewSettings }) },
+        onChanged: { addListener: (listener) => storageListeners.push(listener) }
+      },
+      runtime: { sendMessage: async (message) => {
+        window.lastPreviewMessage = message;
+        if (message.type === "APPEND_APPLICATION") document.body.dataset.submittedSheet = message.sheetTitle;
+        return message.type === "APPEND_APPLICATION" ? { ok: true, data: { rowNumber: 12 } } : { ok: true, data: {} };
+      } }
+    };
+    document.getElementById("change-preview-destination").addEventListener("click", () => {
+      const previous = previewSettings.sheetTitle;
+      previewSettings = { ...previewSettings, sheetId: 4, sheetTitle: "Updated Tracker" };
+      storageListeners.forEach((listener) => listener({ sheetId: { oldValue: 0, newValue: 4 }, sheetTitle: { oldValue: previous, newValue: "Updated Tracker" } }, "sync"));
+    });
+  </script>
+  <script src="../../../src/shared/schema.js"></script>
+  <script src="../../../src/shared/extractor.js"></script>
+  <script src="../../../src/content/content.js"></script>
+</body>
+</html>

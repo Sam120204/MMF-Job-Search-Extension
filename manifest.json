@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Job Sheet",
+  "description": "Review a job posting and add it to your own Google Sheets tracker.",
+  "version": "0.1.0",
+  "minimum_chrome_version": "116",
+  "action": {
+    "default_title": "Capture this job",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "assets/icon-16.png",
+      "32": "assets/icon-32.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon-16.png",
+    "32": "assets/icon-32.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "options_page": "src/options/options.html",
+  "permissions": ["activeTab", "identity", "scripting", "storage"],
+  "host_permissions": ["https://sheets.googleapis.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.myworkdayjobs.com/*"],
+      "js": ["src/shared/schema.js", "src/shared/extractor.js", "src/content/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "oauth2": {
+    "client_id": "REPLACE_WITH_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
+  }
+}

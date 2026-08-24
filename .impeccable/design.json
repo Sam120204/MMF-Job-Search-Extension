@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-24T19:13:59Z",
+  "title": "Design System: Job Sheet",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Archive Paper", "canonical": "#f7f8f5", "tonalRamp": ["oklch(15% 0.008 130)", "oklch(26% 0.008 130)", "oklch(38% 0.008 130)", "oklch(50% 0.008 130)", "oklch(62% 0.008 130)", "oklch(74% 0.008 130)", "oklch(86% 0.008 130)", "oklch(95% 0.008 130)"] },
+      "surface": { "role": "neutral", "displayName": "Fresh Sheet", "canonical": "#ffffff", "tonalRamp": ["oklch(15% 0 0)", "oklch(26% 0 0)", "oklch(38% 0 0)", "oklch(50% 0 0)", "oklch(62% 0 0)", "oklch(74% 0 0)", "oklch(86% 0 0)", "oklch(95% 0 0)"] },
+      "ink": { "role": "neutral", "displayName": "Filing Ink", "canonical": "#17201c", "tonalRamp": ["oklch(15% 0.018 160)", "oklch(26% 0.018 160)", "oklch(38% 0.018 160)", "oklch(50% 0.018 160)", "oklch(62% 0.018 160)", "oklch(74% 0.018 160)", "oklch(86% 0.018 160)", "oklch(95% 0.018 160)"] },
+      "muted": { "role": "neutral", "displayName": "Record Graphite", "canonical": "#52605a", "tonalRamp": ["oklch(15% 0.015 160)", "oklch(26% 0.015 160)", "oklch(38% 0.015 160)", "oklch(50% 0.015 160)", "oklch(62% 0.015 160)", "oklch(74% 0.015 160)", "oklch(86% 0.015 160)", "oklch(95% 0.015 160)"] },
+      "line": { "role": "neutral", "displayName": "Fine Rule", "canonical": "#cbd2cd", "tonalRamp": ["oklch(15% 0.010 155)", "oklch(26% 0.010 155)", "oklch(38% 0.010 155)", "oklch(50% 0.010 155)", "oklch(62% 0.010 155)", "oklch(74% 0.010 155)", "oklch(86% 0.010 155)", "oklch(95% 0.010 155)"] },
+      "line-strong": { "role": "neutral", "displayName": "Firm Rule", "canonical": "#8b9891", "tonalRamp": ["oklch(15% 0.018 155)", "oklch(26% 0.018 155)", "oklch(38% 0.018 155)", "oklch(50% 0.018 155)", "oklch(62% 0.018 155)", "oklch(74% 0.018 155)", "oklch(86% 0.018 155)", "oklch(95% 0.018 155)"] },
+      "forest": { "role": "primary", "displayName": "Ledger Forest", "canonical": "#123a2d", "tonalRamp": ["oklch(15% 0.060 165)", "oklch(26% 0.060 165)", "oklch(38% 0.060 165)", "oklch(50% 0.060 165)", "oklch(62% 0.060 165)", "oklch(74% 0.060 165)", "oklch(86% 0.060 165)", "oklch(95% 0.060 165)"] },
+      "forest-hover": { "role": "primary", "displayName": "Deep Ledger Forest", "canonical": "#0b2c21", "tonalRamp": ["oklch(15% 0.052 165)", "oklch(26% 0.052 165)", "oklch(38% 0.052 165)", "oklch(50% 0.052 165)", "oklch(62% 0.052 165)", "oklch(74% 0.052 165)", "oklch(86% 0.052 165)", "oklch(95% 0.052 165)"] },
+      "mint": { "role": "secondary", "displayName": "Confirmation Mint", "canonical": "#dcebe3", "tonalRamp": ["oklch(15% 0.028 155)", "oklch(26% 0.028 155)", "oklch(38% 0.028 155)", "oklch(50% 0.028 155)", "oklch(62% 0.028 155)", "oklch(74% 0.028 155)", "oklch(86% 0.028 155)", "oklch(95% 0.028 155)"] },
+      "signal": { "role": "secondary", "displayName": "Status Vermilion", "canonical": "#c84b31", "tonalRamp": ["oklch(15% 0.155 35)", "oklch(26% 0.155 35)", "oklch(38% 0.155 35)", "oklch(50% 0.155 35)", "oklch(62% 0.155 35)", "oklch(74% 0.155 35)", "oklch(86% 0.155 35)", "oklch(95% 0.155 35)"] },
+      "signal-soft": { "role": "secondary", "displayName": "Soft Correction Wash", "canonical": "#f8e8e3", "tonalRamp": ["oklch(15% 0.025 35)", "oklch(26% 0.025 35)", "oklch(38% 0.025 35)", "oklch(50% 0.025 35)", "oklch(62% 0.025 35)", "oklch(74% 0.025 35)", "oklch(86% 0.025 35)", "oklch(95% 0.025 35)"] },
+      "focus": { "role": "tertiary", "displayName": "Focus Blue", "canonical": "#146c94", "tonalRamp": ["oklch(15% 0.100 235)", "oklch(26% 0.100 235)", "oklch(38% 0.100 235)", "oklch(50% 0.100 235)", "oklch(62% 0.100 235)", "oklch(74% 0.100 235)", "oklch(86% 0.100 235)", "oklch(95% 0.100 235)"] }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "Settings-page task headings and the strongest full-page section introductions." },
+      "title": { "displayName": "Title", "purpose": "Filing-slip, success, and compact state headings." },
+      "body": { "displayName": "Body", "purpose": "Instructions, editable values, supporting copy, and action labels." },
+      "label": { "displayName": "Record Label", "purpose": "Condensed uppercase field labels, record numbers, descriptors, and stamps." }
+    },
+    "shadows": [
+      { "name": "host-page-lift", "value": "0 12px 34px rgba(17,38,29,.2), 0 3px 8px rgba(17,38,29,.1)", "purpose": "Separates the injected capture panel from arbitrary employer-page content." },
+      { "name": "sticky-paper-fade", "value": "0 -10px 18px rgba(255,255,255,.94)", "purpose": "Protects the popup destination and filing action over scrolling form content." }
+    ],
+    "motion": [
+      { "name": "panel-arrival", "value": ".28s cubic-bezier(.16,1,.3,1)", "purpose": "Reveals the injected filing slip upward from the host-page edge." },
+      { "name": "page-scan", "value": "1.2s cubic-bezier(.2,.7,.2,1) infinite", "purpose": "Moves the short ledger-green scan line while the popup reads a posting." },
+      { "name": "filing-spinner", "value": ".8s steps(4) infinite", "purpose": "Rotates the filing action icon in discrete quarter-turns during a write." },
+      { "name": "reduced-motion", "value": ".01ms", "purpose": "Collapses animation and transition duration when reduced motion is requested; the injected panel arrival is removed entirely." }
+    ],
+    "breakpoints": [
+      { "name": "capture-narrow", "value": "460px" },
+      { "name": "settings-narrow", "value": "640px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Filing Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The commit action for connecting, preparing, or filing a record.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">File in Google Sheet</button>",
+      "css": ".ds-btn-primary { min-height:42px; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:0 15px; border:1px solid var(--forest); border-radius:5px; background:var(--forest); color:var(--surface); font:700 14px/1.45 var(--sans); letter-spacing:0; cursor:pointer; } .ds-btn-primary:hover { background:var(--forest-hover); } .ds-btn-primary:focus-visible { outline:3px solid color-mix(in srgb,var(--focus) 45%,transparent); outline-offset:2px; } .ds-btn-primary:active { background:var(--forest-hover); } .ds-btn-primary:disabled { cursor:wait; opacity:.62; }"
+    },
+    {
+      "name": "Secondary Ledger Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A bordered alternative for retries, opening the sheet, and other non-commit actions.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Open sheet</button>",
+      "css": ".ds-btn-secondary { min-height:42px; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:0 15px; border:1px solid var(--line-strong); border-radius:5px; background:var(--surface); color:var(--ink); font:700 14px/1.45 var(--sans); letter-spacing:0; cursor:pointer; } .ds-btn-secondary:hover { background:#edf1ee; } .ds-btn-secondary:focus-visible { outline:3px solid color-mix(in srgb,var(--focus) 45%,transparent); outline-offset:2px; } .ds-btn-secondary:active { background:#e9eeea; }"
+    },
+    {
+      "name": "Settings Icon Button",
+      "kind": "button",
+      "description": "A quiet square utility control used at the edge of the masthead.",
+      "html": "<button class=\"ds-icon-button\" type=\"button\" aria-label=\"Open spreadsheet settings\" title=\"Spreadsheet settings\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z\"/></svg></button>",
+      "css": ".ds-icon-button { width:36px; height:36px; display:inline-grid; place-items:center; border:0; border-radius:4px; background:transparent; color:var(--muted); cursor:pointer; } .ds-icon-button svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; } .ds-icon-button:hover { background:#e9eeea; color:var(--ink); } .ds-icon-button:focus-visible { outline:3px solid color-mix(in srgb,var(--focus) 45%,transparent); outline-offset:2px; } .ds-icon-button:active { background:#dce9e2; }"
+    },
+    {
+      "name": "Record Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "An editable filing value with a narrow uppercase record label.",
+      "html": "<label class=\"ds-field\">Organization<input class=\"ds-input\" value=\"Royal Bank of Canada\"></label>",
+      "css": ".ds-field { display:grid; gap:5px; color:var(--muted); font:700 11px/1.2 var(--record); text-transform:uppercase; letter-spacing:0; } .ds-input { width:100%; min-height:39px; border:1px solid var(--line); border-radius:4px; background:var(--surface); color:var(--ink); padding:9px 10px; font:400 14px/1.45 var(--sans); text-transform:none; letter-spacing:0; } .ds-input:hover { border-color:var(--line-strong); } .ds-input:focus { border-color:var(--focus); outline:2px solid color-mix(in srgb,var(--focus) 20%,transparent); }"
+    },
+    {
+      "name": "Draft Status Stamp",
+      "kind": "chip",
+      "refersTo": "status-stamp",
+      "description": "A rare, noninteractive annotation that marks the record as provisional.",
+      "html": "<span class=\"ds-status-stamp\">DRAFT</span>",
+      "css": ".ds-status-stamp { display:inline-block; padding:5px 7px 4px; border:1px solid var(--signal); border-radius:3px; color:var(--signal); background:transparent; font:800 10px/1 var(--record); letter-spacing:0; text-transform:uppercase; transform:rotate(-2deg); }"
+    },
+    {
+      "name": "Semantic Notice",
+      "kind": "custom",
+      "description": "A compact text-first band for neutral progress, success, or actionable failure messages.",
+      "html": "<div class=\"ds-notice ds-notice-error\" role=\"status\">Paste a complete Google Sheets link.</div>",
+      "css": ".ds-notice { margin:0; padding:10px 11px; border-radius:4px; background:#e9eeea; color:#344139; font:400 12px/1.45 var(--sans); letter-spacing:0; } .ds-notice-error { background:var(--signal-soft); color:#7a2818; } .ds-notice-success { background:var(--mint); color:#174a37; }"
+    },
+    {
+      "name": "Ledger Masthead",
+      "kind": "nav",
+      "description": "The dark orientation band with the paper mark, product name, surface descriptor, and optional count.",
+      "html": "<header class=\"ds-masthead\"><div class=\"ds-brand-mark\" aria-hidden=\"true\"><span></span><span></span><span></span></div><div class=\"ds-brand-copy\"><strong>Job Sheet</strong><small>Spreadsheet setup</small></div><span class=\"ds-step-mark\">1 connection</span></header>",
+      "css": ".ds-masthead { min-height:70px; display:grid; grid-template-columns:32px 1fr auto; align-items:center; gap:10px; padding:12px 14px; background:var(--forest); color:var(--surface); } .ds-brand-mark { width:28px; height:34px; padding:7px 6px; display:grid; align-content:center; gap:4px; background:var(--surface); border-radius:3px; } .ds-brand-mark span { height:2px; background:var(--forest); } .ds-brand-mark span:last-child { width:65%; } .ds-brand-copy { display:grid; gap:2px; } .ds-brand-copy strong { font:750 17px/1.2 var(--sans); letter-spacing:0; } .ds-brand-copy small { color:#cde0d5; font:700 10px/1.2 var(--record); text-transform:uppercase; letter-spacing:0; } .ds-step-mark { border:1px solid #7ca18f; border-radius:3px; padding:6px 8px; color:#e3eee8; font:700 11px/1 var(--record); text-transform:uppercase; letter-spacing:0; }"
+    },
+    {
+      "name": "Application Record Header",
+      "kind": "custom",
+      "description": "The filing-slip heading that pairs record identity and review instruction with a stamped state.",
+      "html": "<div class=\"ds-record-heading\"><div><span class=\"ds-record-number\">NEW APPLICATION</span><h2>Review before filing</h2></div><span class=\"ds-record-stamp\">DRAFT</span></div>",
+      "css": ".ds-record-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; color:var(--ink); } .ds-record-heading h2 { margin:3px 0 0; font:700 20px/1.18 var(--sans); letter-spacing:0; } .ds-record-number { color:var(--muted); font:800 10px/1 var(--record); text-transform:uppercase; letter-spacing:0; } .ds-record-stamp { padding:5px 7px 4px; border:1px solid var(--signal); border-radius:3px; color:var(--signal); font:800 10px/1 var(--record); text-transform:uppercase; letter-spacing:0; transform:rotate(-2deg); }"
+    },
+    {
+      "name": "Worksheet Ledger Row",
+      "kind": "custom",
+      "description": "A ruled, indexed choice row for scanning worksheet destinations without card chrome.",
+      "html": "<div class=\"ds-ledger-row\"><span class=\"ds-ledger-index\">01</span><strong>2027 Internships</strong><button type=\"button\">Use this tab</button></div>",
+      "css": ".ds-ledger-row { display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:center; gap:12px; min-height:58px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--ink); font:400 14px/1.45 var(--sans); letter-spacing:0; } .ds-ledger-index { color:var(--muted); font:700 11px/1 var(--record); } .ds-ledger-row strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .ds-ledger-row button { min-height:34px; padding:0 12px; border:1px solid var(--line-strong); border-radius:5px; background:var(--surface); color:var(--ink); font:700 14px/1.45 var(--sans); cursor:pointer; } .ds-ledger-row button:hover { background:#edf1ee; } .ds-ledger-row button:focus-visible { outline:3px solid color-mix(in srgb,var(--focus) 45%,transparent); outline-offset:2px; } .ds-ledger-row button:active { background:#e9eeea; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Application Filing Slip",
+    "overview": "Job Sheet turns a live job posting into a compact, inspectable paper record. Its visual world is administrative without feeling bureaucratic: paper-white surfaces, ledger-green chrome, fine horizontal rules, and narrow record labels make each field feel ready to verify and file.\n\nThe system is quiet, dense, and work-focused. Hierarchy comes from alignment, rules, type roles, and small shifts in tone rather than decorative containers. A restrained vermilion stamp marks provisional or exceptional states, while the workflow remains legible as a three-part sequence: inspect, correct, file.",
+    "keyCharacteristics": [
+      "Paper-white surfaces with compact filing-ledger density.",
+      "Ledger green for mastheads, primary actions, and trusted destinations.",
+      "Fine rules and condensed uppercase labels for record structure.",
+      "Vermilion status-stamp accents for draft and error states.",
+      "Explicit review, destination, loading, success, and recovery states."
+    ],
+    "rules": [
+      { "name": "The One Stamp Rule", "body": "Status Vermilion is reserved for the small stamp and error family; it does not compete with Ledger Forest for primary action.", "section": "colors" },
+      { "name": "The Paper-and-Ink Rule", "body": "Build hierarchy with Fresh Sheet, Archive Paper, Filing Ink, and rules before introducing another color.", "section": "colors" },
+      { "name": "The Record Label Rule", "body": "Use condensed uppercase type only for metadata and field structure; keep values, instructions, and actions in the body face and natural case.", "section": "typography" },
+      { "name": "The Zero Tracking Rule", "body": "Letter spacing remains zero even in uppercase labels; hierarchy comes from width, weight, case, and placement.", "section": "typography" },
+      { "name": "The Host-Layer Rule", "body": "Apply substantial elevation only when Job Sheet must sit above a host website; native extension surfaces remain flat and ruled.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do make the current record, its status, its destination, and its final filing action visible in one clear reading order.",
+      "Do use fine one-pixel rules, compact spacing, and aligned labels to create structure before adding containers.",
+      "Do preserve explicit hover, focus, loading, success, error, disabled, and reduced-motion behavior.",
+      "Do collapse paired fields and side-by-side actions when the available width no longer supports comfortable labels and values.",
+      "Do keep Vermilion status cues paired with words such as DRAFT or an actionable error message."
+    ],
+    "donts": [
+      "Don't turn settings sections or individual fields into rounded card stacks.",
+      "Don't use Status Vermilion as a competing primary action color or as ambient decoration.",
+      "Don't add large display typography, excessive whitespace, gradients, or illustrative ornament to operational surfaces.",
+      "Don't apply floating-panel shadows to popup or settings content that already owns its page surface.",
+      "Don't use condensed uppercase type for editable values, instructions, or long-form copy."
+    ]
+  }
+}

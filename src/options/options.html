@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Sheet settings</title>
+  <link rel="stylesheet" href="../shared/base.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <!-- Job Sheet's application-filing world extends here as a full-width setup ledger. -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div><h1>Job Sheet</h1><p>Spreadsheet setup</p></div>
+      <span class="step-mark">1 connection</span>
+    </div>
+  </header>
+  <main>
+    <section class="setup-band">
+      <div class="section-heading"><h2>Choose where applications are filed</h2><p>Paste a native Google Sheets link. Job Sheet only writes after you review and submit a record.</p></div>
+      <form id="link-form" class="link-form">
+        <div class="field"><label for="spreadsheet-url">Google Sheets URL</label><input id="spreadsheet-url" name="spreadsheetUrl" type="url" inputmode="url" placeholder="https://docs.google.com/spreadsheets/d/…/edit" required></div>
+        <button id="inspect-button" class="primary-button" type="submit"><span>Connect and inspect</span></button>
+      </form>
+      <p id="oauth-warning" class="notice" data-tone="error" hidden></p>
+      <p id="setup-notice" class="notice" role="status" aria-live="polite" hidden></p>
+    </section>
+    <section id="tabs-section" class="tabs-band" hidden>
+      <div class="section-heading compact"><h2 id="spreadsheet-title">Worksheet tabs</h2><p>Select an empty tab, an existing tab with the seven tracker columns, or create a prepared tracker tab.</p></div>
+      <div id="tabs-list" class="tabs-list"></div>
+      <button id="create-tab-button" class="secondary-button" type="button"><span>Create a new “Job Tracker” tab</span></button>
+    </section>
+    <section class="columns-band">
+      <div class="section-heading compact"><h2>Tracker columns</h2><p>These headings are checked before every write. A non-empty tab with different headings is never overwritten.</p></div>
+      <ol id="headers-list" class="headers-list"></ol>
+    </section>
+    <section id="current-section" class="current-band" hidden>
+      <div><h2>Current destination</h2><p id="current-destination"></p></div>
+      <div class="current-actions">
+        <a id="open-current" class="secondary-button" href="#" target="_blank" rel="noreferrer"><span>Open sheet</span></a>
+        <button id="sign-out-button" class="text-button" type="button" title="The spreadsheet link will be retained">Sign out of Google</button>
+      </div>
+    </section>
+  </main>
+  <script src="../shared/schema.js"></script>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
