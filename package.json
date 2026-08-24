@@ -5,7 +5,8 @@
   "description": "Capture job postings into a Google Sheets application tracker.",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "package": "bash scripts/package.sh"
+    "package": "bash scripts/package.sh",
+    "package:bootstrap": "bash scripts/package.sh --bootstrap"
   },
   "engines": {
     "node": ">=20"

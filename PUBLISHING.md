@@ -2,19 +2,37 @@
 
 The code runs without a custom backend. Public publishing still requires account-owned Google and Chrome configuration.
 
-## 1. Create the OAuth client
+## 1. Reserve the Chrome Web Store identity
+
+The Google OAuth client must use the permanent Chrome Web Store Item ID. Reserve that ID before configuring OAuth:
+
+1. Create the bootstrap archive:
+
+   ```bash
+   npm run package:bootstrap
+   ```
+
+2. In the Chrome Web Store Developer Dashboard, click **New item** and upload `dist/job-sheet-bootstrap-v0.1.0.zip`.
+3. Keep the item as a draft. Do not submit it for review.
+4. Open the item's **Package** tab and record the **Item ID**.
+5. Click **View public key** and copy the complete public key.
+6. Add that public key as the top-level `key` value in `manifest.json`. When the unpacked extension is reloaded, its local extension ID should match the Web Store Item ID.
+
+The bootstrap package deliberately omits OAuth and is not a usable release. Its only purpose is to reserve the permanent identity. Its version is `0.1.0`, leaving the repository's `0.2.0` version available for the functional upload.
+
+## 2. Create the OAuth client
 
 1. Create or select a project in Google Cloud Console.
 2. Enable the Google Sheets API.
 3. Configure the OAuth consent screen and add the `https://www.googleapis.com/auth/spreadsheets` scope.
-4. In Chrome, load this repository through `chrome://extensions` with Developer mode enabled and copy the generated extension ID.
-5. Create an OAuth client of type **Chrome Extension** using that extension ID.
-6. Replace `REPLACE_WITH_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com` in `manifest.json` with the generated client ID.
-7. Reload the unpacked extension and test sign-in with an OAuth test user.
+4. Create an OAuth client of type **Chrome Extension** using the Web Store Item ID.
+5. Replace `REPLACE_WITH_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com` in `manifest.json` with the generated client ID.
+6. In Chrome, load this repository through `chrome://extensions` with Developer mode enabled.
+7. Confirm its extension ID matches the Web Store Item ID, then test sign-in with an OAuth test user.
 
-A Web Store listing has its own stable extension ID. Confirm the production OAuth client uses that ID before release.
+The Item ID, manifest public key, and OAuth client ID are public identifiers and may be committed. Never add an OAuth client secret, access token, or refresh token to the repository.
 
-## 2. Complete public metadata
+## 3. Complete public metadata
 
 - Replace the contact placeholder in `PRIVACY.md`.
 - Host the privacy policy on a verified HTTPS domain.
@@ -24,7 +42,7 @@ A Web Store listing has its own stable extension ID. Confirm the production OAut
 - Use the prepared description and permission explanations in `STORE_LISTING.md`.
 - Submit the OAuth consent screen for Google verification if Google requires it for public use.
 
-## 3. Validate and package
+## 4. Validate and package
 
 ```bash
 npm test
@@ -33,8 +51,8 @@ npm run package
 
 The packaging command refuses to create a release archive while the placeholder OAuth client ID remains. Its output is versioned from the manifest, for example `dist/job-sheet-v0.2.0.zip`.
 
-## 4. Submit
+## 5. Submit
 
-Upload the ZIP in the Chrome Web Store Developer Dashboard, complete the listing and privacy sections, choose public or restricted visibility, pay the one-time developer registration fee if the account has not already done so, and submit the item for review.
+Upload the generated `dist/job-sheet-v0.2.0.zip` as the draft item's new package, complete the listing and privacy sections, choose public or restricted visibility, and submit the item for review.
 
 Chrome Web Store and Google OAuth approval are external reviews. Publication cannot be completed without access to the owner accounts.
